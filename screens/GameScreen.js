@@ -7,7 +7,7 @@ import Card from '../components/Card'
 const generateRandomBetween = (min, max, exclude) => {
     min = Math.ceil(min);
     max = Math.floor(max);
-    const rndNum = () => Math.floor(Math.random * (max - min)) + min;
+    const rndNum =  Math.floor(Math.random() * (max - min)) + min;
     if (rndNum === exclude) {
         return generateRandomBetween(min, max, exclude);
     } else {
@@ -21,7 +21,7 @@ const GameScreen = props => {
         <View style = {styles.screen}>
             <Text>Opponent's Guess</Text>
             <NumberContainer>{currentGuess}</NumberContainer>
-            <Card style={styles.buttonContainer}>
+            <Card style={styles.buttonContainer} >
                 <Button title="Lower" onPress={() => { }} />
                 <Button title="Higher" onPress={() => { }} />
             </Card>
