@@ -3,6 +3,9 @@ import { View, Text, StyleSheet, Button, Image } from 'react-native';
 import BodyText from '../components/BodyText'
 import TitleText from '../components/TitleText'
 
+import Colors from '../constants/Colors'
+import MainButton from '../components/MainButton'
+
 
 const GameOverScreen = props => {
     return (
@@ -14,22 +17,23 @@ const GameOverScreen = props => {
                     // source={{ uri: 'https://www.scitecheuropa.eu/wp-content/uploads/2020/01/Mount-Everest-696x392.jpg' }}
                     resizeMode="stretch" />
             </View>
-            <BodyText>Number of rounds: {props.roundNumber}</BodyText>
-            <BodyText>Number was: {props.userNumber}</BodyText>
-            <Button title="New Game" onPress={props.onRestart} />
-        </View>
+            <View style={styles.resultContainer}>
+                <BodyText style={styles.resultText}>Your phone needed <Text style={styles.hilight}>{props.roundNumber}</Text> rounds to guess the number <Text style={styles.hilight}>{props.userNumber}</Text></BodyText>
+            </View>
+            <MainButton onPress={props.onRestart}>New Game</MainButton>
+            </View>
     )
 }
 
 const styles = StyleSheet.create({
-    screen: {
-        flex: 1,
+                screen: {
+                flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     },
 
     imageContainer: {
-        borderRadius: 150,
+                borderRadius: 150,
         borderWidth: 3,
         borderColor: 'black',
         width: 300,
@@ -38,8 +42,20 @@ const styles = StyleSheet.create({
         marginVertical: 30
     },
     image: {
-        width: '100%',
+                width: '100%',
         height: '100%'
+    },
+    hilight: {
+                color: Colors.primary,
+        fontFamily: 'open-sans-bold'
+    },
+    resultContainer:{
+                marginHorizontal:30,
+        marginVertical:15
+    },
+    resultText:{
+                textAlign: 'center',
+        fontSize:20
     }
 })
 

@@ -1,8 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { View, Text, StyleSheet, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, Button, Alert, ScrollView, FlatList } from 'react-native';
 
 import NumberContainer from '../components/NumberContainer'
 import Card from '../components/Card'
+import MainButton from '../components/MainButton'
+import { Ionicons } from '@expo/vector-icons'
+
+import BodyText from '../components/BodyText'
 
 const generateRandomBetween = (min, max, exclude) => {
     min = Math.ceil(min);
@@ -13,23 +17,33 @@ const generateRandomBetween = (min, max, exclude) => {
     } else {
         return rndNum;
     }
+};
+
+const renderListItem = (listLength, itemData) => {
+    return (
+        <View style={styles.listItem}>
+            <BodyText>#{listLength-itemData.index}</BodyText>
+            <BodyText>{itemData.item}</BodyText>
+        </View>
+    )
 }
 
 const GameScreen = props => {
-    const [currentGuess, setCurrentGuess] = useState(generateRandomBetween(1, 99, props.userChoice));
-    const[rounds, setRounds] = useState(0);
+    const initialGuess = generateRandomBetween(1, 99, props.userChoice)
+    const [currentGuess, setCurrentGuess] = useState(initialGuess);
+    const [pastGuesses, setPastGuesses] = useState([initialGuess.toString()]);
 
     //state will re- render the component, reference wont
     const currentLow = useRef(1);
     const currentHigh = useRef(100);
 
     //pulling out items from props
-    const {userChoice, onGameOver} = props;
+    const { userChoice, onGameOver } = props;
 
     //run everytime after the gameScreen is rendered
-    useEffect(()=> {
-        if(currentGuess === userChoice){
-            onGameOver(rounds)
+    useEffect(() => {
+        if (currentGuess === userChoice) {
+            onGameOver(pastGuesses.length)
         }
     }, [currentGuess, userChoice, onGameOver])
 
@@ -42,20 +56,33 @@ const GameScreen = props => {
         if (direction === 'lower') {
             currentHigh.current = currentGuess;
         } else {
-            currentLow.current = currentGuess;
+            currentLow.current = currentGuess + 1;
         }
         const nextNumber = generateRandomBetween(currentLow.current, currentHigh.current, currentGuess);
         setCurrentGuess(nextNumber);
-        setRounds(currRound => currRound+1);
+        // setRounds(currRound => currRound+1);
+        setPastGuesses(currPastGuesses => [nextNumber.toString(), ...currPastGuesses])
     }
     return (
         <View style={styles.screen}>
             <Text>Opponent's Guess</Text>
             <NumberContainer>{currentGuess}</NumberContainer>
             <Card style={styles.buttonContainer} >
-                <Button title="Lower" onPress={nextGuessHandler.bind('this', 'lower')} />
-                <Button title="Higher" onPress={nextGuessHandler.bind('this', 'greater')} />
+                <MainButton onPress={nextGuessHandler.bind('this', 'lower')}><Ionicons name="ios-arrow-down" size={24} color='white' /></MainButton>
+                <MainButton onPress={nextGuessHandler.bind('this', 'greater')}><Ionicons name="ios-arrow-up" size={24} color='white' /></MainButton>
             </Card>
+            <View style={styles.listContainer}>
+                {/* <ScrollView contentContainerStyle={styles.list}>
+                    {pastGuesses.map((guess, index) => renderListItem(guess, pastGuesses.length - index))}
+                </ScrollView> */}
+
+                <FlatList 
+                //for every item in the array
+                keyExtractor= {item=> item}
+                data={pastGuesses}
+                renderItem={renderListItem.bind('this', pastGuesses.length)}
+                contentContainerStyle={styles.list}/>
+            </View>
 
         </View>
 
@@ -74,8 +101,27 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-around",
         marginTop: 20,
-        width: 300,
-        maxWidth: '80%'
+        width: 400,
+        maxWidth: '90%'
+    },
+    listItem: {
+        borderColor: '#ccc',
+        borderWidth: 1,
+        padding: 15,
+        marginVertical: 10,
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%'
+    },
+    listContainer: {
+        width: '60%',
+        flex: 1
+    },
+    list: {
+        //flex one does not work, should use flexGrow
+        flexGrow: 1,
+        justifyContent: 'flex-end'
     }
 })
 
