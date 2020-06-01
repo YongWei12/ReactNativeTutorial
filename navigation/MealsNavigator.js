@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform, Text } from 'react-native';
 import Color from '../constant/Color'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
@@ -20,8 +20,12 @@ const defaultStackNavOptions = {
     headerStyle: {
         backgroundColor: Platform.OS === 'android' ? Color.primary : ''
     },
-    headerTextStyle:{
+    headerTitleStyle:{
         fontFamily:'open-sans-bold'
+    },
+    //for back text for ios
+    headerBackTitleStyle:{
+        fontFamily:'open-sans'
     },
     headerTintColor: 'white',
 
@@ -60,7 +64,8 @@ const tabScreenConfig = {
             tabBarIcon: (tabInfo) => {
                 return (<Ionicons name='ios-restaurant' size={25} color={tabInfo.tintColor} />)
             },
-            tabBarColor: Color.primary
+            tabBarColor: Color.primary,
+            tabBarLabel: Platform.OS==='android'? <Text style={{fontFamily: "open-sans-bold"}}>Meals</Text>: "Meals"
         },
     },
     Facourites: {
@@ -72,7 +77,8 @@ const tabScreenConfig = {
                     < Ionicons name="ios-star" size={25} color={tabInfo.tintColor} />
                 )
             },
-            tabBarColor: Color.accent
+            tabBarColor: Color.accent,
+            tabBarLabel: Platform.OS==='android'? <Text style={{fontFamily: "open-sans-bold"}}>Favourites</Text>: "Meals"
         }
     }
 }
@@ -84,6 +90,9 @@ const MealsFavTabnavigator = Platform.OS === 'android' ?
     }) :
     createBottomTabNavigator(tabScreenConfig, {
         tabBarOptions: {
+            labelStyle:{
+                fontFamily:'open-sans-bold'
+            },
             activeTintColor: Color.accent
         }
     }
