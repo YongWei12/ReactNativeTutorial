@@ -5,16 +5,23 @@ import { Ionicons } from '@expo/vector-icons'
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs'
+import { createDrawerNavigator } from 'react-navigation-drawer'
 import CategoriesScreen from '../screens/CategoriesScreen';
 import CategoryMealsScreen from '../screens/CategoryMealsScreen';
 import MealDetailScreen from '../screens/MealDetailScreen';
 import FavouritesScreen from '../screens/FavouritesScreen'
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs'
+import FilterScreen from '../screens/FilterScreen'
+
+
 
 
 const defaultStackNavOptions = {
     headerStyle: {
         backgroundColor: Platform.OS === 'android' ? Color.primary : ''
+    },
+    headerTextStyle:{
+        fontFamily:'open-sans-bold'
     },
     headerTintColor: 'white',
 
@@ -31,12 +38,19 @@ const MealsNavigator = createStackNavigator({
     defaultNavigationOptions: defaultStackNavOptions
 });
 
-const FavNavigator= createStackNavigator({
+const FavNavigator = createStackNavigator({
     FavouritesScreen: FavouritesScreen,
     MealDetail: MealDetailScreen
 }, {
     defaultNavigationOptions: defaultStackNavOptions
-})
+});
+
+const FiltersNavigator = createStackNavigator({
+    Filters: FilterScreen
+},
+    {
+        defaultNavigationOptions: defaultStackNavOptions
+    })
 
 const tabScreenConfig = {
     // create stack for the 2 different tabs 
@@ -75,6 +89,23 @@ const MealsFavTabnavigator = Platform.OS === 'android' ?
     }
     );
 
+const MainNavigator = createDrawerNavigator({
+    MealsFavs: {
+        screen: MealsFavTabnavigator,
+        navigationOptions:{
+            drawerLabel: 'Meals '
+        }
+    },
+    Filter: FiltersNavigator
+},{
+    contentOptions:{
+        activeTintColor: Color.accent,
+        labelStyle:{
+            fontFamily: 'open-sans'
+        }
+    }
+});
+
 
 //cos meals is nested-> it shows the main navigator 
-export default createAppContainer(MealsFavTabnavigator);
+export default createAppContainer(MainNavigator);
